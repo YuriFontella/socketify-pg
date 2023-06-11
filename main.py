@@ -10,7 +10,7 @@ cursor = conn.cursor()
 app = App()
 
 async def home(res, req):
-  cursor.execute("select name from users limit 1")
+  cursor.execute("select name, to_char(created_at, 'YYYY-MM-DD') from users limit 1")
   records = cursor.fetchall()
 
   res.send(records)
