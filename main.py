@@ -1,17 +1,14 @@
 from socketify import App
-from psycopg.rows import dict_row
 
-import psycopg
+from db import Database
 
-conn = psycopg.connect("user=postgres password=123456 host=localhost dbname=blocks", row_factory=dict_row)
-
-cursor = conn.cursor()
+db = Database()
 
 app = App()
 
 async def home(res, req):
-  cursor.execute("select name, to_char(created_at, 'YYYY-MM-DD') from users limit 1")
-  records = cursor.fetchall()
+  records = db.query("select name from users limit 2000000")
+  records = records.fetchall()
 
   res.send(records)
 
