@@ -31,8 +31,8 @@ async def post(res, req):
         (total, saved) = (excluded.total, excluded.saved) returning id
     """
 
-    execute = db.execute(query, data).fetchone()
-    print(execute['id'])
+    record = db.execute(query, data).fetchone()
+    print(record['id'])
 
   except(RuntimeError): raise RuntimeError(db.DatabaseError)
 
