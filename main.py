@@ -2,13 +2,14 @@ from socketify import App
 
 from db import Database
 
-db = Database()
+db = Database().conn
 
 app = App()
 
-async def home(res, req):
-  records = db.query("select name from users limit 2000000")
-  records = records.fetchall()
+def home(res, req):
+  records = db.execute("select name from users limit 1").fetchall()
+
+  print(len(records))
 
   res.send(records)
 

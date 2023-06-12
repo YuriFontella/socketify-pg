@@ -1,2 +1,2 @@
 socketify
-psycopg
+psycopg[binary]
