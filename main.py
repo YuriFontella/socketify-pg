@@ -18,14 +18,15 @@ async def post(res, req):
 
   try:
 
-    db.execute('insert into groups (name, total, saved) values (%(name)s, %(total)s, %(saved)s)', data)
+    query = db.execute('insert into groups (name, total, saved) values (%(name)s, %(total)s, %(saved)s) on conflict (name) do update set (total, saved) = (excluded.total, excluded.saved) returning id', data)
+    print(query.fetchone()['id'])
 
-  except: res.end(False)
+  except(RuntimeError): raise RuntimeError(db.DatabaseError)
 
-  finally:
-
+  else:
     db.commit()
 
+  finally:
     res.end(True)
 
 app.get("/", get)
