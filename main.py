@@ -22,9 +22,9 @@ async def post(res, req):
       insert into groups (name, total, saved) 
       values 
         (
-          %(name) s, 
-          %(total) s, 
-          %(saved) s
+          %(name)s, 
+          %(total)s, 
+          %(saved)s
         ) on conflict (name) do 
       update 
       set 
@@ -39,11 +39,23 @@ async def post(res, req):
   else:
     db.commit()
 
-  finally:
     res.end(True)
+
+  finally:
+    print('Transação encerrada')
+
+
+def on_error(error, res, req):
+  print(str(error))
+
+  if res != None:
+    res.write_status(500)
+    res.end('Algo deu errado')
 
 app.get("/", get)
 app.post("/", post)
+
+app.set_error_handler(on_error)
 
 app.listen(3000)
 app.run()
