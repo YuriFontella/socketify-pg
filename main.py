@@ -49,8 +49,7 @@ def on_error(error, res, req):
   print(str(error))
 
   if res != None:
-    res.write_status(500)
-    res.end('Algo deu errado')
+    res.write_status(500).end('Algo deu errado')
 
 app.get("/", get)
 app.post("/", post)
