@@ -7,7 +7,7 @@ db = Database().conn
 app = App()
 
 def get(res, req):
-  records = db.execute("select name from users limit 1").fetchall()
+  records = db.execute("select name from groups limit 1").fetchall()
 
   print(len(records))
 
@@ -34,7 +34,7 @@ async def post(res, req):
     record = db.execute(query, data).fetchone()
     print(record['id'])
 
-  except(RuntimeError): raise RuntimeError(db.DatabaseError)
+  except RuntimeError: raise RuntimeError(db.DatabaseError)
 
   else:
     db.commit()
@@ -45,6 +45,33 @@ async def post(res, req):
     print('Transação encerrada')
 
 
+async def put(res, req):
+
+  try:
+
+    id = req.get_parameter(0)
+    
+    params = await res.get_json()
+
+    params['id'] = id
+
+    query = "update groups set name = %(name)s where id = %(id)s"
+
+    db.execute(query, params)
+
+    db.commit()
+
+    res.end(True)
+
+  except RuntimeError: 
+    raise(RuntimeError)
+
+def delete(res, req):
+  db.execute("delete from groups where id = (%s)", (req.get_parameter(0),))
+  db.commit()
+
+  res.end(True)
+
 def on_error(error, res, req):
   print(str(error))
 
@@ -53,6 +80,8 @@ def on_error(error, res, req):
 
 app.get("/", get)
 app.post("/", post)
+app.put("/:id", put)
+app.delete("/:id", delete)
 
 app.set_error_handler(on_error)
 
