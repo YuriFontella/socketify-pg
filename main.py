@@ -34,7 +34,8 @@ async def post(res, req):
     record = db.execute(query, data).fetchone()
     print(record['id'])
 
-  except RuntimeError: raise RuntimeError(db.DatabaseError)
+  except RuntimeError: 
+    raise RuntimeError(db.DatabaseError)
 
   else:
     db.commit()
@@ -48,23 +49,21 @@ async def post(res, req):
 async def put(res, req):
 
   try:
-
-    id = req.get_parameter(0)
-    
-    params = await res.get_json()
-
-    params['id'] = id
-
     query = "update groups set name = %(name)s where id = %(id)s"
+
+    params = await res.get_json()
+    params.update({ id: req.get_parameter(0) })
 
     db.execute(query, params)
 
+  except RuntimeError: 
+    raise(db.DatabaseError)
+  
+  else:
     db.commit()
 
     res.end(True)
 
-  except RuntimeError: 
-    raise(RuntimeError)
 
 def delete(res, req):
   db.execute("delete from groups where id = (%s)", (req.get_parameter(0),))
