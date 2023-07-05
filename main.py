@@ -7,10 +7,7 @@ db = Database().conn
 app = App()
 
 def get(res, req):
-  records = db.execute("select name from groups limit 1").fetchall()
-
-  print(len(records))
-
+  records = db.execute("select name from users limit 10000").fetchall()
   res.send(records)
 
 async def post(res, req):
